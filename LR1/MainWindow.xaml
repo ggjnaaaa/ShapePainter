@@ -1,0 +1,90 @@
+﻿<Window x:Class="LR1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LR1"
+        mc:Ignorable="d"
+        Title="Лабораторная работа 1. Анастасия Г." Height="550" Width="800"
+        MinHeight="550" MinWidth="800"
+        FontFamily="Arial" FontSize="18">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Width" Value="180"/>
+            <Setter Property="Height" Value="50"/>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+        </Style>
+        <local:PointIndexConverter x:Key="PointIndexConverter"/>
+    </Window.Resources>
+    <Window.DataContext>
+        <local:MainWindowViewModel/>
+    </Window.DataContext>
+    <Grid>
+        <!--Холст для вывода фигур-->
+        <Border BorderThickness="1" BorderBrush="Black" Margin="{Binding ShapeCreator.CanvasMargins}">
+            <Canvas Background="#FFEAEAEA" ClipToBounds="True" Width="Auto" Height="Auto">
+                <ItemsControl ItemsSource="{Binding Lines}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </Canvas>
+        </Border>
+
+        <!--Кнопки для создания фигур-->
+        <Button Command="{Binding SquareClick}"
+                Margin="0,0,35,85" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <TextBlock Text="Квадрат"/>
+        </Button>
+        <Button Command="{Binding RandomRectangleClick}"
+                Margin="0,0,35,155" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <TextBlock Text="Произвольный прямоугольник"/>
+        </Button>
+        <Button Command="{Binding RandomTriangleClick}"
+                Margin="0,0,35,225" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <TextBlock Text="Произвольный треугольник"/>
+        </Button>
+
+        <!--Информация о выбранной фигуре-->
+        <TextBlock Text="{Binding SelectedShape.AllInfo, FallbackValue='Выберите фигуру чтобы увидеть всю информацию'}"
+                   FontSize="16" TextAlignment="Left"
+                   Height="120" Margin="35,40,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="500"/>
+
+        <!--Слайдеры-->
+        <TextBlock Text="Смещение по X:" Margin="0,0,74,439" HorizontalAlignment="Right" Width="141" Height="26" VerticalAlignment="Bottom"/>
+        <Slider HorizontalAlignment="Right" Margin="0,0,35,421" VerticalAlignment="Bottom" Width="180"
+                Value="{Binding XSlider}" Minimum="-500" Maximum="500"  IsEnabled="True"/>
+        <TextBlock Text="Смещение по Y:" Margin="0,0,74,383" HorizontalAlignment="Right" Width="141" Height="26" VerticalAlignment="Bottom"/>
+        <Slider HorizontalAlignment="Right" Margin="0,0,35,365" Width="180" Height="18" VerticalAlignment="Bottom"
+                Value="{Binding YSlider}" Minimum="-500" Maximum="500"  IsEnabled="True"/>
+        <TextBlock Text="Толщина линии:" Margin="0,0,74,318" HorizontalAlignment="Right" Width="141" Height="26" VerticalAlignment="Bottom"/>
+        <Slider HorizontalAlignment="Right" Margin="0,0,35,295" Width="180" Height="18" VerticalAlignment="Bottom"
+                Value="{Binding LineSlider}" Minimum="1" Maximum="10" />
+
+        <!--Информация о точках выбранной фигуры-->
+        <Border BorderThickness="1" BorderBrush="Black" Margin="35,0,35,20" Height="50" VerticalAlignment="Bottom">
+            <Grid Background="LightGray">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding SelectedShape.Points}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Converter={StaticResource PointIndexConverter}}" />
+                                    <TextBlock Text=": x = " />
+                                    <TextBox Text="{Binding X, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="50"/>
+                                    <TextBlock Text=" y = " />
+                                    <TextBox Text="{Binding Y, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="50"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
